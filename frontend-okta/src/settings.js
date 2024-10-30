@@ -47,25 +47,13 @@ function Settings() {
                             )
                         },
                         {
-                            label: "TENANT_ID",
+                            label: "ISSUER",
                             value: (
                                 <CopyToClipboard
-                                    copyButtonAriaLabel="Copy TENANT_ID"
-                                    copyErrorText="TENANT_ID failed to copy"
-                                    copySuccessText="TENANT_ID copied"
-                                    textToCopy={window.TENANT_ID}
-                                    variant="inline"
-                                />
-                            )
-                        },
-                        {
-                            label: "SCOPE",
-                            value: (
-                                <CopyToClipboard
-                                    copyButtonAriaLabel="Copy SCOPE"
-                                    copyErrorText="SCOPE failed to copy"
-                                    copySuccessText="SCOPE copied"
-                                    textToCopy={window.SCOPE}
+                                    copyButtonAriaLabel="Copy ISSUER"
+                                    copyErrorText="ISSUER failed to copy"
+                                    copySuccessText="ISSUER copied"
+                                    textToCopy={window.ISSUER}
                                     variant="inline"
                                 />
                             )
