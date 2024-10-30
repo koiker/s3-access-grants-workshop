@@ -276,7 +276,8 @@ $Env.AWS_SESSION_TOKEN="${creds.SessionToken}"`);
                                         },
                                         {
                                             id: "settings-project",
-                                            text: "Project settings"
+                                            text: "Project settings",
+                                            href: "/settings",
                                         }
                                     ]
                                 },
@@ -343,7 +344,10 @@ $Env.AWS_SESSION_TOKEN="${creds.SessionToken}"`);
                                             href: '#',
                                             text: 'Portal',
                                         }}
-                                        items={[{type: 'link', text: `S3 Access Grants`, href: `#`}]}
+                                        items={[
+                                            {type: 'link', text: `S3 Access Grants`, href: `#`},
+                                            {type: 'link', text: `Settings`, href: `/settings`}
+                                        ]}
                                     />
                                 }
                                 notifications={
