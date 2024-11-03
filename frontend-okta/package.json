@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@aws-amplify/storage": "^6.6.9-storage-browser.4db9fef.0",
+    "@aws-amplify/ui-react-storage": "^0.0.0-storage-browser-d368514-20241008194754",
     "@cloudscape-design/code-view": "^3.0.15",
     "@cloudscape-design/components": "^3.0.592",
     "@cloudscape-design/global-styles": "^1.0.25",
@@ -11,6 +13,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "aws-amplify": "^6.6.4-storage-browser.4db9fef.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.3",
