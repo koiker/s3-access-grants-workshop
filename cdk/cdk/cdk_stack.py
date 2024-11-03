@@ -60,6 +60,9 @@ class CdkStack(Stack):
         cdn_okta = cloudfront.Distribution(self, "s3ag-webapp-okta-cdn",
                                      default_behavior=cloudfront.BehaviorOptions(
                                          origin=origins.S3Origin(webapp_okta_bucket),
+                                         cache_policy=cloudfront.CachePolicy(
+                                             default_ttl=Duration.seconds(60)  # Set TTL to 60 seconds
+                                         ),
                                          function_associations=[cloudfront.FunctionAssociation(
                                              function=cf_function,
                                              event_type=cloudfront.FunctionEventType.VIEWER_REQUEST
@@ -73,6 +76,9 @@ class CdkStack(Stack):
             's3ag-webapp-cdn',
             existing_bucket_obj=webapp_entra_bucket,
             insert_http_security_headers=False,
+            cloud_front_distribution_props={
+                "cache_policy": cloudfront.CachePolicy(default_ttl=Duration.seconds(60))
+            }
         ).cloud_front_web_distribution
 
         user_transient_role = iam.Role(self, 'UserTransientRole',
