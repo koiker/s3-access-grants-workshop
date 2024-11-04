@@ -46,6 +46,7 @@ import {I18nProvider} from '@cloudscape-design/components/i18n';
 import messages from '@cloudscape-design/components/i18n/messages/all.en';
 import {oidcConfig, api_endpoint} from "./config";
 import Settings from "./settings";
+import S3Browser from "./S3Browser";
 
 const LOCALE = 'en';
 
@@ -346,6 +347,7 @@ $Env.AWS_SESSION_TOKEN="${creds.SessionToken}"`);
                                         }}
                                         items={[
                                             {type: 'link', text: `S3 Access Grants`, href: `#`},
+                                            {type: 'link', text: `Browser`, href: `/s3browser`},
                                             {type: 'link', text: `Settings`, href: `/settings`}
                                         ]}
                                     />
@@ -594,6 +596,7 @@ $Env.AWS_SESSION_TOKEN="${creds.SessionToken}"`);
             <Routes>
                 <Route path="/" exact={true} element={<Home/>}/>
                 <Route path="/login/callback" element={<LoginCallback/>}/>
+                <Route path="/s3browser" element={<S3Browser/>}/>
                 <Route path="/settings" exact={true} element={<Settings/>}/>
             </Routes>
         </Security>
