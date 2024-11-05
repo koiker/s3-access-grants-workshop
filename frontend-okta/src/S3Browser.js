@@ -11,14 +11,12 @@ import {api_endpoint} from "./config";
 
 function S3Browser() {
     const {oktaAuth, authState} = useOktaAuth();
-    const [locations, setLocations] = useState([]);
-    const [credentials, setCredentials] = useState({});
 
-    function fetchGrants(authState) {
+    function fetchGrants() {
         if( !authState ) {
             return [];
         }
-        fetch(api_endpoint + 'ListGrants', {
+        return fetch(api_endpoint + 'ListGrants', {
             method: 'GET',
             mode: 'cors',
             headers: {
@@ -35,14 +33,14 @@ function S3Browser() {
                 return response.json();
             })
             .then(response => {
-                setLocations(response.response.map( location => ({
+                return response.response.map( location => ({
                     bucketName: location.GrantScope,
                     key: '',
                     region: 'us-east-1',
                     type: 'BUCKET',
                     permission: location.Permission,
                     scope: location.GrantScope,
-                })))
+                }))
             })
             .catch(error => {
                 console.log(error);
@@ -54,57 +52,39 @@ function S3Browser() {
             Permission: permission
         };
         try {
-            await oktaAuth.token.renewTokens().then(renewToken => {
-                oktaAuth.tokenManager.setTokens(renewToken);
-                fetch(api_endpoint + 'FetchCredentials?' + new URLSearchParams(params), {
+            const finalCredentials = await oktaAuth.token.renewTokens().then(renewToken => {
+                return fetch(api_endpoint + 'FetchCredentials?' + new URLSearchParams(params), {
                     method: 'GET',
                     mode: 'cors',
                     headers: {
-                        'Authorization': authState.accessToken.accessToken
+                        'Authorization': renewToken.accessToken.accessToken
                     },
-                }).then(data => data.json()).then(data => {
-                    setCredentials( {
-                        AccessKeyId: data.response.Credentials.AccessKeyId,
-                        SecretAccessKey: data.response.Credentials.SecretAccessKey,
-                        SessionToken: data.response.Credentials.SessionToken,
-                        Expiration: data.response.Credentials.Expiration});
+                }).then(data => data.json()).then(({ response }) => {
+                  return {
+                    accessKeyId: response.Credentials.AccessKeyId,
+                    secretAccessKey: response.Credentials.SecretAccessKey,
+                    sessionToken: response.Credentials.SessionToken,
+                    expiration: new Date(response.Credentials.Expiration),
+                  };
                 })
             });
-            return credentials;
+            return finalCredentials;
 
         } catch (error) {
             console.error('There was a problem with the fetch operation:', error);
-            setCredentials({AccessKeyId: '', SecretAccessKey: '', SessionToken: '', Expiration: ''});
         }
     }
-    useEffect(() => {
-        // Fetch data when the component mounts
-        if(locations === undefined || locations.length === 0){
-            // fetchGrants(authState);
-            setLocations([{
-                bucketName: 's3://koike-s3ag',
-                key: '',
-                region: 'us-east-1',
-                type: 'BUCKET',
-                permission: 'READWRITE',
-                scope: 's3://koike-s3ag/*',
-            }]);
-        }
-    }, [authState])
 
     const { StorageBrowser } = createStorageBrowser({
         elements: elementsDefault, // replace to customize your UI
         config: {
             listLocations: async (input = {}) => {
-                const { nextToken, pageSize } = input;
-                return {
-                    locations: locations
-                }
+                const locations = await fetchGrants();
+                return { locations };
             },
             getLocationCredentials: async ({ scope, permission }) => {
-                await fetchCredentials(scope, permission);
-                console.log(credentials);
-                return credentials;
+                const finalCredentials = await fetchCredentials(scope, permission);
+                return { credentials: finalCredentials };
             },
             region: 'us-east-1',
             registerAuthListener: (onStateChange) => {
