@@ -1,9 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import ContentLayout from "@cloudscape-design/components/content-layout";
 import Container from "@cloudscape-design/components/container";
 import Header from "@cloudscape-design/components/header";
 import Link from "@cloudscape-design/components/link";
 import Button from "@cloudscape-design/components/button";
+import Table from "@cloudscape-design/components/table";
+import TextContent from "@cloudscape-design/components/text-content";
 import {createStorageBrowser, elementsDefault} from '@aws-amplify/ui-react-storage/browser';
 import '@aws-amplify/ui-react-storage/storage-browser-styles.css';
 import {useOktaAuth} from "@okta/okta-react";
@@ -11,6 +13,13 @@ import {api_endpoint} from "./config";
 
 function S3Browser() {
     const {oktaAuth, authState} = useOktaAuth();
+    function MyButton({ variant, ...props }) {
+        console.log(variant);
+        if (variant === 'table-data' || variant === 'download') {
+            return <Button {...props} variant="link" />
+        }
+        return <Button {...props} />
+    }
 
     function fetchGrants() {
         if( !authState ) {
@@ -76,7 +85,11 @@ function S3Browser() {
     }
 
     const { StorageBrowser } = createStorageBrowser({
-        elements: elementsDefault, // replace to customize your UI
+        elements: {
+            Button: MyButton,
+            Heading: Header,
+            Text: TextContent,
+        },
         config: {
             listLocations: async (input = {}) => {
                 const locations = await fetchGrants();
